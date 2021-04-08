@@ -1,3 +1,3 @@
 
 install:
-	go build -o  ~/.steampipe/plugins/local/nomad/nomad.plugin  *.go
+	go build -o  ~/.steampipe/plugins/hub.steampipe.io/plugins/local/nomad@latest/nomad.plugin  *.go
