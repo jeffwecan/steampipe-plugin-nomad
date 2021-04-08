@@ -2,7 +2,6 @@ package nomad
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/hashicorp/nomad/api"
 	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
@@ -39,10 +38,10 @@ func tableNomadNode(_ context.Context) *plugin.Table {
 		List: &plugin.ListConfig{
 			Hydrate: listNodes,
 		},
-		// Get: &plugin.GetConfig{
-		// 		KeyColumns: plugin.SingleColumn("id"),
-		// 		Hydrate:    getNode,
-		// },
+		Get: &plugin.GetConfig{
+			KeyColumns: plugin.SingleColumn("id"),
+			Hydrate:    getNode,
+		},
 		Columns: []*plugin.Column{
 			{
 				Name:        "id",
@@ -98,6 +97,12 @@ func tableNomadNode(_ context.Context) *plugin.Table {
 				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("ModifyIndex"),
 			},
+			{
+				Name:        "attributes",
+				Description: "Node attributes",
+				Type:        proto.ColumnType_JSON,
+				Transform:   transform.FromField("Attributes"),
+			},
 		},
 	}
 }
@@ -113,7 +118,7 @@ func listNodes(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) 
 
 	logger := plugin.Logger(ctx)
 	// Create Session
-	client, err := NomadClient(ctx, d, )
+	client, err := NomadClient(ctx, d)
 	if err != nil {
 		return nil, err
 	}
@@ -125,14 +130,41 @@ func listNodes(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) 
 	}
 
 	for _, node := range nodesResp {
-		logger.Info(fmt.Sprintf("node: %+v", node))
-    d.StreamListItem(ctx, node)
+		logger.Info("listNodes:: node:", node)
+		// d.StreamListItem(ctx, node)
+		nodeReadResp, _, err := client.Nodes().Info(node.ID, queryOpts)
+		logger.Info("listNodes:: nodeReadResp:", nodeReadResp)
+		if err != nil {
+			return nil, err
+		}
+		d.StreamListItem(ctx, nodeReadResp)
 	}
 
 	return nil, nil
 }
 
 //// HYDRATE FUNCTIONS
+
+func getNode(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
+
+	logger := plugin.Logger(ctx)
+	// Create Session
+	client, err := NomadClient(ctx, d)
+	if err != nil {
+		return nil, err
+	}
+
+	logger.Info("getNode:: d.KeyColumnQuals:", d.KeyColumnQuals)
+	id := d.KeyColumnQuals["id"].GetStringValue()
+	queryOpts := &api.QueryOptions{}
+	// nodesResp, _, err := client.GetNodeClient(id, queryOpts)
+	nodeResp, _, err := client.Nodes().Info(id, queryOpts)
+	logger.Info("getNode:: nodeResp:", nodeResp)
+	if err != nil {
+		return nil, err
+	}
+	return nodeResp, nil
+}
 
 // func getOrganizationDetails(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
 // 	plugin.Logger(ctx).Trace("getOrganizationDetails")

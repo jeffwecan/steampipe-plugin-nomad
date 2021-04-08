@@ -19,7 +19,7 @@ func NomadClient(ctx context.Context, d *plugin.QueryData) (*api.Client, error) 
 	// }
 
 	conf := api.DefaultConfig()
-	// conf.Address = *config.Address
+	conf.Address = *GetConfig(d.Connection).Address
 
 	// conf.Region = d.Get("region").(string)
 	// conf.SecretID = d.Get("secret_id").(string)
