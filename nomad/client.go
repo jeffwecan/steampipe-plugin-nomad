@@ -11,7 +11,7 @@ import (
 
 // ACMService returns the service connection for AWS ACM service
 func NomadClient(ctx context.Context, d *plugin.QueryData) (*api.Client, error) {
-
+	logger := plugin.Logger(ctx)
 	// have we already created and cached the service?
 	// serviceCacheKey := fmt.Sprintf("nomad-%s", region)
 	// if cachedData, ok := d.ConnectionManager.Cache.Get(serviceCacheKey); ok {
@@ -20,6 +20,7 @@ func NomadClient(ctx context.Context, d *plugin.QueryData) (*api.Client, error) 
 
 	conf := api.DefaultConfig()
 	conf.Address = *GetConfig(d.Connection).Address
+	logger.Trace("NomadClient:: conf.Address:", conf.Address)
 
 	// conf.Region = d.Get("region").(string)
 	// conf.SecretID = d.Get("secret_id").(string)

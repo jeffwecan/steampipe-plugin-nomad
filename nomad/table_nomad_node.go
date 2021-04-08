@@ -130,10 +130,10 @@ func listNodes(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) 
 	}
 
 	for _, node := range nodesResp {
-		logger.Info("listNodes:: node:", node)
+		logger.Trace("listNodes:: node:", node)
 		// d.StreamListItem(ctx, node)
 		nodeReadResp, _, err := client.Nodes().Info(node.ID, queryOpts)
-		logger.Info("listNodes:: nodeReadResp:", nodeReadResp)
+		logger.Trace("listNodes:: nodeReadResp:", nodeReadResp)
 		if err != nil {
 			return nil, err
 		}
@@ -154,12 +154,12 @@ func getNode(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 		return nil, err
 	}
 
-	logger.Info("getNode:: d.KeyColumnQuals:", d.KeyColumnQuals)
+	logger.Trace("getNode:: d.KeyColumnQuals:", d.KeyColumnQuals)
 	id := d.KeyColumnQuals["id"].GetStringValue()
 	queryOpts := &api.QueryOptions{}
 	// nodesResp, _, err := client.GetNodeClient(id, queryOpts)
 	nodeResp, _, err := client.Nodes().Info(id, queryOpts)
-	logger.Info("getNode:: nodeResp:", nodeResp)
+	logger.Trace("getNode:: nodeResp:", nodeResp)
 	if err != nil {
 		return nil, err
 	}
