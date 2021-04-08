@@ -2,6 +2,7 @@ package nomad
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/hashicorp/nomad/api"
 	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
@@ -10,7 +11,6 @@ import (
 )
 
 //// TABLE DEFINITION
-
 
 // NodeListStub is a subset of information returned during
 // node list operations.
@@ -87,13 +87,13 @@ func tableNomadNode(_ context.Context) *plugin.Table {
 				Transform:   transform.FromField("Status"),
 			},
 			{
-				Name:        "statusDescription",
+				Name:        "status_description",
 				Description: "Node status description",
 				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("StatusDescription"),
 			},
 			{
-				Name:        "modifyIndex",
+				Name:        "modify_index",
 				Description: "Node modify index",
 				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("ModifyIndex"),
@@ -111,6 +111,7 @@ func tableNomadNode(_ context.Context) *plugin.Table {
 
 func listNodes(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 
+	logger := plugin.Logger(ctx)
 	// Create Session
 	client, err := NomadClient(ctx, d, )
 	if err != nil {
@@ -124,6 +125,7 @@ func listNodes(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) 
 	}
 
 	for _, node := range nodesResp {
+		logger.Info(fmt.Sprintf("node: %+v", node))
     d.StreamListItem(ctx, node)
 	}
 
