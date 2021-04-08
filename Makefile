@@ -1,3 +1,3 @@
 
 install:
-	go build -o  ~/.steampipe/plugins/hub.steampipe.io/plugins/turbot/nomad@latest/steampipe-plugin-nomad.plugin  *.go
+	go build -o  ~/.steampipe/plugins/local/nomad/nomad.plugin  *.go

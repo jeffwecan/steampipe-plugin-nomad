@@ -10,7 +10,7 @@ import (
 )
 
 // ACMService returns the service connection for AWS ACM service
-func NomadService(ctx context.Context, d *plugin.QueryData, config *nomadConfig) (*api.Client, error) {
+func NomadClient(ctx context.Context, d *plugin.QueryData) (*api.Client, error) {
 
 	// have we already created and cached the service?
 	// serviceCacheKey := fmt.Sprintf("nomad-%s", region)
