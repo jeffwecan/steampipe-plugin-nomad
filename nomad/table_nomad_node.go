@@ -159,7 +159,7 @@ func getNode(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 	queryOpts := &api.QueryOptions{}
 	// nodesResp, _, err := client.GetNodeClient(id, queryOpts)
 	nodeResp, _, err := client.Nodes().Info(id, queryOpts)
-	logger.Trace("getNode:: nodeResp:", nodeResp)
+	// logger.Trace("getNode:: nodeResp:", fmt.Sprintf("%+v", nodeResp))
 	if err != nil {
 		return nil, err
 	}

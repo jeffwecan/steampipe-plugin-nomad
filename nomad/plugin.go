@@ -18,7 +18,7 @@ const pluginName = "steampipe-plugin-nomad"
 // Plugin creates this (nomad) plugin
 func Plugin(ctx context.Context) *plugin.Plugin {
 	p := &plugin.Plugin{
-		Name:             pluginName,
+		Name: pluginName,
 		// DefaultTransform: transform.FromCamel(),
 		// DefaultGetConfig: &plugin.GetConfig{
 		// 	ShouldIgnoreError: isNotFoundError([]string{"ResourceNotFoundException", "NoSuchEntity"}),
@@ -29,6 +29,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 		},
 		TableMap: map[string]*plugin.Table{
 			"nomad_node": tableNomadNode(ctx),
+			"nomad_job":  tableNomadJob(ctx),
 		},
 	}
 
